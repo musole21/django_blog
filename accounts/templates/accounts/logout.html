@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block main-content %}
+    <h2>You are logged out!</h2>
+    <a href="{% url 'accounts:login' %}">Sign in again</a>
+{% endblock main-content %}
