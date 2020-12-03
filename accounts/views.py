@@ -20,4 +20,4 @@ def sign_up(request):
 
 @login_required
 def profile(request):
-    return render(request, 'accounts/profile.html')
+    return render(request, 'accounts/profile.html', context={'status': None})
