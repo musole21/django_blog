@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
-from .forms import UserRegistrationForm
+from .forms import UserRegistrationForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib import messages
 
 def sign_up(request):
@@ -20,4 +20,17 @@ def sign_up(request):
 
 @login_required
 def profile(request):
-    return render(request, 'accounts/profile.html', context={'status': None})
+    if request.method == "GET":
+        user_form = UserUpdateForm(instance=request.user)
+        profile_form = ProfileUpdateForm(instance=request.user.profile)
+    elif request.method == "POST":
+        user_form = UserUpdateForm( request.POST, instance=request.user)
+        profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user)
+
+        if profile_form.is_valid() and user_form.is_valid():
+            profile_form.save()
+            user_form.save()
+            messages.success(request, 'Successfully updated!')
+
+    context = {'user_form': user_form, 'profile_form': profile_form}
+    return render(request, 'accounts/profile.html', context=context)
